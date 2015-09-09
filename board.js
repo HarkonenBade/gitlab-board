@@ -24,7 +24,9 @@ var IssueCardList = React.createClass({
         });
         return (
             <div className="col-md-4">
-                {issueNodes}
+                <div className="list-wrapper">    
+                    {issueNodes}
+                </div>
             </div>
         );
     }
@@ -34,9 +36,12 @@ var IssueController = React.createClass({
     render: function(){
         return (
             <div className="row">
-                <IssueCardList issues={tmp_data} />
-                <IssueCardList issues={tmp_data} />
-                <IssueCardList issues={tmp_data} />,
+                <IssueCardList issues={tmp_data.filter(function(issue){
+                                           return issue.assignee == null;
+                                       })} />
+                <IssueCardList issues={tmp_data.filter(function(issue){
+                                           return issue.assignee != null;
+                                       })} />
             </div>
         );
     }

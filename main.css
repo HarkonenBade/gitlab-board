@@ -1,7 +1,22 @@
 body{
     font-size: 1.5rem;
+    background-color: lightsteelblue;
 }
 
 .row{
     padding-top: .9375rem;
+}
+
+.list-wrapper{
+    background-color: lightgray;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+}
+
+.list-wrapper :last-child{
+    margin-bottom: 0;
+}
+
+.card{
+    background-color: white;
 }
