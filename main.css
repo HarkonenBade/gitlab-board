@@ -20,3 +20,16 @@ body{
 .card{
     background-color: white;
 }
+
+.label-cell{
+    display: table-cell;
+    border-radius: 0.25rem;
+}
+
+.label-list{
+    display: table;
+    height: 0.75rem;
+    width: 100%;
+    padding: 0.125rem;
+    margin-bottom: 0.375rem;
+}

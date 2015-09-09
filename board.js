@@ -4,11 +4,35 @@ var Avatar = React.createClass({
     }
 });
 
+var Label = React.createClass({
+    render: function() {
+        var color = labels[this.props.label];
+        return (
+            <div className="label-cell" style={{backgroundColor:color}}>
+            </div>
+        );
+    }
+});
+
+var LabelList = React.createClass({
+    render: function() {
+        var labelNodes = this.props.labels.map(function (label){
+            return (<Label label={label} />);
+        });
+        return (
+            <div className="label-list">
+                {labelNodes}
+            </div>
+        );
+    }
+});
+
 var IssueCard = React.createClass({
     render: function() {
         return (
             <div className="card">
                 <div className="card-block">
+                    {this.props.issue.labels.length > 0 ? <LabelList labels={this.props.issue.labels} /> : null}
                     {this.props.issue.assignee != null ? <Avatar user={this.props.issue.assignee} /> : null}
                     <p className="card-text">[{this.props.issue.iid}] {this.props.issue.title}</p>
                 </div>
