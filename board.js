@@ -68,15 +68,25 @@ var IssueList = React.createClass({
 });
 
 var IssueController = React.createClass({
+    getInitialState: function(){
+        return {issues: []};
+    },
+    componentDidMount: function() {
+        $.get(host + "/api/v3/projects/" + project_id + "/issues?state=opened&private_token=" + token, function(result) {
+            if (this.isMounted()) {
+                this.setState({issues: result});
+            }
+        }.bind(this));
+    },
     render: function(){
         return (
             <div className="row">
-                <IssueCardList issues={tmp_data.filter(function(issue){
-                                           return issue.assignee == null;
+                <IssueList issues={this.state.issues.filter(function(issue){
+                                       return issue.assignee == null;
                                    })}
                            title="Backlog"/>
-                <IssueCardList issues={tmp_data.filter(function(issue){
-                                           return issue.assignee != null;
+                <IssueList issues={this.state.issues.filter(function(issue){
+                                       return issue.assignee != null;
                                    })}
                            title="Active"/>
                 <IssueList issues={[]}
