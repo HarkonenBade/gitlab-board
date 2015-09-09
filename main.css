@@ -21,6 +21,11 @@ body{
     background-color: white;
 }
 
+.list-header{
+    padding: 0.25rem;
+    margin-bottom: 0.75rem;
+}
+
 .label-cell{
     display: table-cell;
     border-radius: 0.25rem;

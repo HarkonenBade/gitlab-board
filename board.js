@@ -41,14 +41,25 @@ var IssueCard = React.createClass({
     }
 });
 
-var IssueCardList = React.createClass({
+var IssueListHeader = React.createClass({
+    render: function(){
+        return (
+            <div className="list-header text-center">
+                <h3>{this.props.title} ({this.props.count})</h3>
+            </div>
+        );
+    }
+});
+
+var IssueList = React.createClass({
     render: function() {
         var issueNodes = this.props.issues.map(function (issue) {
             return (<IssueCard key={issue.iid} issue={issue} />);
         });
         return (
             <div className="col-md-4">
-                <div className="list-wrapper">    
+                <div className="list-wrapper">
+                    <IssueListHeader title={this.props.title} count={this.props.issues.length} />
                     {issueNodes}
                 </div>
             </div>
@@ -62,10 +73,14 @@ var IssueController = React.createClass({
             <div className="row">
                 <IssueCardList issues={tmp_data.filter(function(issue){
                                            return issue.assignee == null;
-                                       })} />
+                                   })}
+                           title="Backlog"/>
                 <IssueCardList issues={tmp_data.filter(function(issue){
                                            return issue.assignee != null;
-                                       })} />
+                                   })}
+                           title="Active"/>
+                <IssueList issues={[]}
+                           title="Awaiting Review" />
             </div>
         );
     }
