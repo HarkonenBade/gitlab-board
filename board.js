@@ -6,9 +6,8 @@ var Avatar = React.createClass({
 
 var Label = React.createClass({
     render: function() {
-        var color = labels[this.props.label];
         return (
-            <div className="label-cell" style={{backgroundColor:color}}>
+            <div className="label-cell" style={{backgroundColor:this.props.label.color}}>
             </div>
         );
     }
@@ -71,11 +70,32 @@ var IssueController = React.createClass({
     getInitialState: function(){
         return {issues: []};
     },
-    componentDidMount: function() {
-        $.get(host + "/api/v3/projects/" + project_id + "/issues?state=opened&private_token=" + token, function(result) {
+    refreshData: function() {
+        var params = $.param({state: "opened",
+                              per_page: 100,
+                              private_token: this.props.token});
+        var url = `${this.props.host}/api/v3/projects/${this.props.project_id}/issues?${params}`;
+        $.get(url, function(result) {
             if (this.isMounted()) {
-                this.setState({issues: result});
+                var lab_map = this.state.labels;
+                this.setState({issues: result.map(function(issue){
+                    issue.labels = issue.labels.map(function(label){
+                        return lab_map[label]
+                    });
+                    return issue;
+                })});
             }
+        }.bind(this));
+    },
+    componentDidMount: function() {
+        var params = $.param({private_token: this.props.token});
+        var url = `${this.props.host}/api/v3/projects/${this.props.project_id}/labels?${params}`;
+        $.get(url, function(result) {
+            this.setState({labels: result.reduce(function (obj, cur) {
+                obj[cur.name] = cur;
+                return obj;
+            }, {})});
+            this.refreshData();
         }.bind(this));
     },
     render: function(){
@@ -97,6 +117,6 @@ var IssueController = React.createClass({
 });
 
 React.render(
-    <IssueController />,
+    <IssueController host={host} project_id={project_id} token={token}/>,
     $('.container-fluid')[0]
 );
