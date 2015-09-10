@@ -66,6 +66,21 @@ var IssueList = React.createClass({
     }
 });
 
+function correctLabels(issues, labels){
+    return result.map(function(issue){
+               issue.labels = issue.labels.map(function(label){
+                   return lables[label]
+               });
+               return issue;
+           });
+}
+
+function extractLabels(labels){
+    return labels.reduce(function (obj, cur) {
+               obj[cur.name] = cur;
+               return obj;
+           }, {});
+
 var IssueController = React.createClass({
     getInitialState: function(){
         return {issues: []};
@@ -77,13 +92,7 @@ var IssueController = React.createClass({
         var url = `${this.props.host}/api/v3/projects/${this.props.project_id}/issues?${params}`;
         $.get(url, function(result) {
             if (this.isMounted()) {
-                var lab_map = this.state.labels;
-                this.setState({issues: result.map(function(issue){
-                    issue.labels = issue.labels.map(function(label){
-                        return lab_map[label]
-                    });
-                    return issue;
-                })});
+                this.setState({issues: correctLabels(result, this.state.labels});
             }
         }.bind(this));
     },
@@ -91,10 +100,7 @@ var IssueController = React.createClass({
         var params = $.param({private_token: this.props.token});
         var url = `${this.props.host}/api/v3/projects/${this.props.project_id}/labels?${params}`;
         $.get(url, function(result) {
-            this.setState({labels: result.reduce(function (obj, cur) {
-                obj[cur.name] = cur;
-                return obj;
-            }, {})});
+            this.setState({labels: extractLabels(result)});
             this.refreshData();
         }.bind(this));
     },
