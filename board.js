@@ -1,6 +1,6 @@
 var Avatar = React.createClass({
     render: function() {
-        return (<img className="img-rounded pull-right" src={this.props.user.avatar_url} />);
+        return (<img className="avatar img-rounded pull-right" src={this.props.user.avatar_url} />);
     }
 });
 
@@ -56,9 +56,9 @@ var IssueList = React.createClass({
             return (<IssueCard key={issue.iid} issue={issue} />);
         });
         return (
-            <div className="col-md-4">
-                <div className="list-wrapper">
-                    <IssueListHeader title={this.props.title} count={this.props.issues.length} />
+            <div className="list-wrapper">
+                <IssueListHeader title={this.props.title} count={this.props.issues.length} />
+                <div className="card-wrapper">
                     {issueNodes}
                 </div>
             </div>
@@ -67,9 +67,9 @@ var IssueList = React.createClass({
 });
 
 function correctLabels(issues, labels){
-    return result.map(function(issue){
+    return issues.map(function(issue){
                issue.labels = issue.labels.map(function(label){
-                   return lables[label]
+                   return labels[label]
                });
                return issue;
            });
@@ -80,6 +80,7 @@ function extractLabels(labels){
                obj[cur.name] = cur;
                return obj;
            }, {});
+}
 
 var IssueController = React.createClass({
     getInitialState: function(){
@@ -92,7 +93,7 @@ var IssueController = React.createClass({
         var url = `${this.props.host}/api/v3/projects/${this.props.project_id}/issues?${params}`;
         $.get(url, function(result) {
             if (this.isMounted()) {
-                this.setState({issues: correctLabels(result, this.state.labels});
+                this.setState({issues: correctLabels(result, this.state.labels)});
             }
         }.bind(this));
     },
@@ -106,17 +107,37 @@ var IssueController = React.createClass({
     },
     render: function(){
         return (
-            <div className="row">
-                <IssueList issues={this.state.issues.filter(function(issue){
-                                       return issue.assignee == null;
-                                   })}
-                           title="Backlog"/>
-                <IssueList issues={this.state.issues.filter(function(issue){
-                                       return issue.assignee != null;
-                                   })}
-                           title="Active"/>
-                <IssueList issues={[]}
-                           title="Awaiting Review" />
+            <div className="g-container">
+                <div className="col">
+                    <IssueList issues={this.state.issues.filter(function(issue){
+                                           return (issue.assignee == null &&
+                                                   issue.labels.filter(function(label){
+                                                       return (label.name == "feature" || label.name == "optimization");
+                                                   }).length > 0);
+                                       })}
+                               title="Features"/>
+                </div>
+                <div className="col">
+                    <IssueList issues={this.state.issues.filter(function(issue){
+                                           return (issue.assignee == null &&
+                                                   issue.labels.filter(function(label){
+                                                       return (label.name == "feature" || label.name == "optimization");
+                                                   }).length == 0);
+                                       })}
+                               title="Bugs"/>
+                </div>
+                <div className="col">
+                    <div className="segment">
+                        <IssueList issues={this.state.issues.filter(function(issue){
+                                               return issue.assignee != null;
+                                           })}
+                                   title="Active"/>
+                    </div>
+                    <div className="segment">
+                        <IssueList issues={[]}
+                                   title="Awaiting Review" />
+                    </div>
+                </div>
             </div>
         );
     }
@@ -124,5 +145,5 @@ var IssueController = React.createClass({
 
 React.render(
     <IssueController host={host} project_id={project_id} token={token}/>,
-    $('.container-fluid')[0]
+    $('body')[0]
 );

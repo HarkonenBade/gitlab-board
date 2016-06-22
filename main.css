@@ -3,17 +3,62 @@ body{
     background-color: lightsteelblue;
 }
 
-.row{
-    padding-top: .9375rem;
+.g-container{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    padding: 1rem;
+}
+
+.col:first-child{
+    padding-left: 0;
+}
+
+.col:last-child{
+    padding-right: 0;
+}
+
+.col{
+    width: 33%;
+    height: 100%;
+    padding: 0 0.5rem;
+    float: left;
+}
+
+.segment{
+    height: 50%;
+}
+
+.segment:first-child{
+    padding-bottom: 0.5rem;
+}
+
+.segment:last-child{
+    padding-top: 0.5rem;
 }
 
 .list-wrapper{
     background-color: lightgray;
     border-radius: 0.5rem;
     padding: 0.5rem;
+    height: 100%;
 }
 
-.list-wrapper :last-child{
+.card-wrapper{
+    overflow-y : scroll;
+    height: 100%;
+    padding-top: 3.5rem;
+    margin-top: -3.5rem;
+}
+
+.card-wrapper::-webkit-scrollbar{
+    display: none;
+}
+
+.card-wrapper :last-child{
     margin-bottom: 0;
 }
 
@@ -37,4 +82,9 @@ body{
     width: 100%;
     padding: 0.125rem;
     margin-bottom: 0.375rem;
+}
+
+.avatar{
+    width: 32px;
+    height: auto;
 }
